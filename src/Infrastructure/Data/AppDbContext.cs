@@ -18,7 +18,7 @@ namespace stela_api.src.Infrastructure.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connectionString = Environment.GetEnvironmentVariable("PostgresConnectionStringForStela", EnvironmentVariableTarget.User) ?? throw new Exception("db connection is empty");
+            var connectionString = Environment.GetEnvironmentVariable("PostgresConnectionStringForStela") ?? throw new Exception("db connection is empty");
             optionsBuilder.UseNpgsql(connectionString);
             optionsBuilder.EnableSensitiveDataLogging();
             base.OnConfiguring(optionsBuilder);

@@ -24,7 +24,7 @@ namespace stela_api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var jwtSettingsString = Environment.GetEnvironmentVariable("JwtSettings", EnvironmentVariableTarget.User) ?? throw new Exception("JwtSettings is not found");
+            var jwtSettingsString = Environment.GetEnvironmentVariable("JwtSettings") ?? throw new Exception("JwtSettings is not found");
             var jwtSettings = JsonConvert.DeserializeObject<JwtSettings>(jwtSettingsString) ?? throw new Exception("jwt settings is not correct format");
 
             var fileInspector = new ContentInspectorBuilder()
