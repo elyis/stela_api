@@ -1,3 +1,5 @@
+using stela_api.src.Domain.Enums;
+
 namespace stela_api.src.Domain.Entities.Shared
 {
     public class TokenPair
@@ -10,5 +12,6 @@ namespace stela_api.src.Domain.Entities.Shared
 
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
+        public UserRole Role { get; set; }
     }
 }

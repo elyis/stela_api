@@ -20,18 +20,35 @@ namespace stela_api.src.Web.Controllers
         }
 
 
-        [SwaggerOperation("Регистрация")]
+        [SwaggerOperation("Подать заявку на регистрацию")]
         [SwaggerResponse(200, "Успешно создан", Type = typeof(TokenPair))]
         [SwaggerResponse(400, "Токен не валиден или активирован")]
         [SwaggerResponse(409, "Почта уже существует")]
 
 
-        [HttpPost("signup")]
-        public async Task<IActionResult> SignUpAsync(SignUpBody signUpBody)
+        [HttpPost("apply-registration")]
+        public async Task<IActionResult> ApplyForRegistrationAsync(SignUpBody signUpBody)
         {
-            string role = Enum.GetName(UserRole.User)!;
-            var result = await _authService.SignUp(signUpBody, role);
+            var result = await _authService.ApplyForRegistration(signUpBody);
             return result;
+        }
+
+        [SwaggerOperation("Подтвердить регистрацию")]
+        [SwaggerResponse(200, "Успешно создан", Type = typeof(TokenPair))]
+        [SwaggerResponse(400, "Неверный метод верификации, ошибочный код или время жизни истекло")]
+        [SwaggerResponse(404)]
+        [SwaggerResponse(409, "Почта уже существует")]
+
+        [HttpPost("signup")]
+        public async Task<IActionResult> SignUpAsync(AccountVerificationBody body)
+        {
+            if (body.Method == VerificationMethod.Email)
+            {
+                var result = await _authService.VerifyUnconfirmedAccount(body.Identifier, body.Code);
+                return result;
+            }
+
+            return BadRequest();
         }
 
 

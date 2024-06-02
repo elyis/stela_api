@@ -5,8 +5,9 @@ namespace stela_api.src.App.IService
 {
     public interface IAuthService
     {
-        Task<IActionResult> SignUp(SignUpBody body, string rolename);
+        Task<IActionResult> ApplyForRegistration(SignUpBody body);
         Task<IActionResult> SignIn(SignInBody body);
         Task<IActionResult> RestoreToken(string refreshToken);
+        Task<IActionResult> VerifyUnconfirmedAccount(string email, string code);
     }
 }

@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using stela_api.src.App.IService;
 using stela_api.src.App.Service;
 using stela_api.src.Domain.Entities.Config;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace stela_api
 {
@@ -32,10 +33,16 @@ namespace stela_api
             var emailServiceSettinsString = Environment.GetEnvironmentVariable(nameof(EmailServiceSettings), EnvironmentVariableTarget.User)
                                             ?? throw new Exception("EmailServiceSettings is not found");
 
+            var phoneServiceSettingsString = Environment.GetEnvironmentVariable(nameof(PhoneServiceSettings), EnvironmentVariableTarget.User)
+                                       ?? throw new Exception("PhoneServiceSettings is not found");
+
             var jwtSettings = JsonConvert.DeserializeObject<JwtSettings>(jwtSettingsString)
                               ?? throw new Exception("jwt settings is not correct format");
             var emailServiceSettings = JsonConvert.DeserializeObject<EmailServiceSettings>(emailServiceSettinsString)
                                        ?? throw new Exception("EmailServiceSettings is not correct format");
+
+            var phoneServiceSettings = JsonConvert.DeserializeObject<PhoneServiceSettings>(phoneServiceSettingsString)
+                ?? throw new Exception("PhoneServiceSettings is not correct format");
 
             var fileInspector = new ContentInspectorBuilder()
             {
@@ -85,17 +92,28 @@ namespace stela_api
                     Description = "Api",
                 });
 
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "Bearer auth scheme",
+                    In = ParameterLocation.Header,
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+
+                options.OperationFilter<SecurityRequirementsOperationFilter>();
+
                 options.EnableAnnotations();
             }).AddSwaggerGenNewtonsoftSupport();
-
-
-            services.AddSingleton<IJwtService, JwtService>();
-            services.AddSingleton<IEmailService, EmailService>();
-            services.AddSingleton<IFileUploaderService, LocalFileUploaderService>();
 
             services.AddSingleton(fileInspector);
             services.AddSingleton(jwtSettings);
             services.AddSingleton(emailServiceSettings);
+            services.AddSingleton(phoneServiceSettings);
+
+            services.AddSingleton<IJwtService, JwtService>();
+            services.AddSingleton<IEmailService, EmailService>();
+            services.AddSingleton<IPhoneService, PhoneService>();
+            services.AddSingleton<IFileUploaderService, LocalFileUploaderService>();
 
             services.AddScoped<IAuthService, AuthService>();
 

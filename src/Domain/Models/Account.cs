@@ -14,7 +14,7 @@ namespace stela_api.src.Domain.Models
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
         public string PasswordHash { get; set; }
         public string? RestoreCode { get; set; }
         public string RoleName { get; set; }
@@ -23,6 +23,10 @@ namespace stela_api.src.Domain.Models
         public string? Token { get; set; }
         public DateTime? TokenValidBefore { get; set; }
         public string? Image { get; set; }
+        public string? ConfirmationCode { get; set; }
+        public DateTime? ConfirmationCodeValidBefore { get; set; }
+        public bool IsEmailVerified { get; set; }
+        public bool IsPhoneVerified { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public ProfileBody ToProfileBody()
@@ -34,6 +38,8 @@ namespace stela_api.src.Domain.Models
                 FirstName = FirstName,
                 LastName = LastName,
                 Phone = Phone,
+                IsEmailVerified = IsEmailVerified,
+                IsPhoneVerified = IsPhoneVerified,
                 UrlImage = string.IsNullOrEmpty(Image) ? null : $"{Constants.WebPathToProfileIcons}{Image}",
             };
         }

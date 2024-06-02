@@ -15,6 +15,7 @@ namespace stela_api.src.Infrastructure.Data
         }
 
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<UnconfirmedAccount> UnconfirmedAccounts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
