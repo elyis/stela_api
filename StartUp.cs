@@ -9,6 +9,9 @@ using webApiTemplate.src.App.IService;
 using webApiTemplate.src.App.Service;
 using webApiTemplate.src.Domain.Entities.Config;
 using Newtonsoft.Json;
+using stela_api.src.App.IService;
+using stela_api.src.App.Service;
+using stela_api.src.Domain.Entities.Config;
 
 namespace stela_api
 {
@@ -24,8 +27,15 @@ namespace stela_api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var jwtSettingsString = Environment.GetEnvironmentVariable("JwtSettings", EnvironmentVariableTarget.User) ?? throw new Exception("JwtSettings is not found");
-            var jwtSettings = JsonConvert.DeserializeObject<JwtSettings>(jwtSettingsString) ?? throw new Exception("jwt settings is not correct format");
+            var jwtSettingsString = Environment.GetEnvironmentVariable(nameof(JwtSettings))
+                                    ?? throw new Exception("JwtSettings is not found");
+            var emailServiceSettinsString = Environment.GetEnvironmentVariable(nameof(EmailServiceSettings), EnvironmentVariableTarget.User)
+                                            ?? throw new Exception("EmailServiceSettings is not found");
+
+            var jwtSettings = JsonConvert.DeserializeObject<JwtSettings>(jwtSettingsString)
+                              ?? throw new Exception("jwt settings is not correct format");
+            var emailServiceSettings = JsonConvert.DeserializeObject<EmailServiceSettings>(emailServiceSettinsString)
+                                       ?? throw new Exception("EmailServiceSettings is not correct format");
 
             var fileInspector = new ContentInspectorBuilder()
             {
@@ -80,9 +90,14 @@ namespace stela_api
 
 
             services.AddSingleton<IJwtService, JwtService>();
+            services.AddSingleton<IEmailService, EmailService>();
             services.AddSingleton<IFileUploaderService, LocalFileUploaderService>();
+
             services.AddSingleton(fileInspector);
             services.AddSingleton(jwtSettings);
+            services.AddSingleton(emailServiceSettings);
+
+            services.AddScoped<IAuthService, AuthService>();
 
             services.Scan(scan => scan.FromCallingAssembly()
                     .AddClasses(classes =>
@@ -95,13 +110,6 @@ namespace stela_api
                     .AddClasses(classes =>
                         classes.Where(type =>
                             type.Name.EndsWith("Manager")))
-                    .AsImplementedInterfaces()
-                    .WithScopedLifetime());
-
-            services.Scan(scan => scan.FromCallingAssembly()
-                    .AddClasses(classes =>
-                        classes.Where(type =>
-                            type.Name.EndsWith("Service")))
                     .AsImplementedInterfaces()
                     .WithScopedLifetime());
         }

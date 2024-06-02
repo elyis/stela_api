@@ -11,10 +11,7 @@ namespace stela_api.src.Domain.IRepository
         Task<string?> UpdateTokenAsync(string refreshToken, Guid userId, TimeSpan? duration = null);
         Task<Account?> GetByTokenAsync(string refreshTokenHash);
 
-        Task<Account?> UpdateFirstName(Guid id, string firstName);
-        Task<Account?> UpdateLastName(Guid id, string lastName);
-        Task<Account?> UpdatePhone(Guid id, string phone);
-        Task<Account?> UpdateEmail(Guid id, string email);
+        Task<Account?> Update(Guid id, UpdateAccountBody body);
         Task<Account?> UpdateImage(Guid userId, string filename);
     }
 }
