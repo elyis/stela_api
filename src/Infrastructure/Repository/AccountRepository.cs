@@ -79,51 +79,26 @@ namespace stela_api.src.Infrastructure.Repository
             return user.Token;
         }
 
-        public async Task<Account?> UpdateFirstName(Guid id, string firstName)
+
+        public async Task<Account?> Update(Guid id, UpdateAccountBody body)
         {
             var account = await GetById(id);
             if (account == null)
                 return null;
 
-            account.FirstName = firstName;
+            if (body.FirstName != null)
+                account.FirstName = body.FirstName;
+
+            if (body.LastName != null)
+                account.LastName = body.LastName;
+
+            if (body.Email != null)
+                account.Email = body.Email;
+
+            if (body.Phone != null)
+                account.Phone = body.Phone;
+
             await _context.SaveChangesAsync();
-
-            return account;
-        }
-
-        public async Task<Account?> UpdateLastName(Guid id, string lastName)
-        {
-            var account = await GetById(id);
-            if (account == null)
-                return null;
-
-            account.LastName = lastName;
-            await _context.SaveChangesAsync();
-
-            return account;
-        }
-
-        public async Task<Account?> UpdatePhone(Guid id, string phone)
-        {
-            var account = await GetById(id);
-            if (account == null)
-                return null;
-
-            account.Phone = phone;
-            await _context.SaveChangesAsync();
-
-            return account;
-        }
-
-        public async Task<Account?> UpdateEmail(Guid id, string email)
-        {
-            var account = await GetById(id);
-            if (account == null)
-                return null;
-
-            account.Email = email;
-            await _context.SaveChangesAsync();
-
             return account;
         }
     }

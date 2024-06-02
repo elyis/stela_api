@@ -37,60 +37,18 @@ namespace stela_api.src.Web.Controllers
             return user == null ? NotFound() : Ok(user.ToProfileBody());
         }
 
-        [HttpPatch("me/first-name"), Authorize]
-        [SwaggerOperation("Изменить имя пользователя")]
+        [HttpPatch("me"), Authorize]
+        [SwaggerOperation("Обновить данные пользователя")]
         [SwaggerResponse(200)]
+        [SwaggerResponse(400)]
         [SwaggerResponse(404)]
 
-        public async Task<IActionResult> UpdateFirstName(
-            UpdateNameBody body,
+        public async Task<IActionResult> UpdateAccount(
+            UpdateAccountBody body,
             [FromHeader(Name = nameof(HttpRequestHeader.Authorization))] string token)
         {
             var tokenPayload = _jwtService.GetTokenPayload(token);
-            var result = await _accountRepository.UpdateFirstName(tokenPayload.UserId, body.Name);
-            return result == null ? NotFound() : Ok();
-        }
-
-
-        [HttpPatch("me/last-name"), Authorize]
-        [SwaggerOperation("Изменить фамилию пользователя")]
-        [SwaggerResponse(200)]
-        [SwaggerResponse(404)]
-
-        public async Task<IActionResult> UpdateLastName(
-            UpdateNameBody body,
-            [FromHeader(Name = nameof(HttpRequestHeader.Authorization))] string token)
-        {
-            var tokenPayload = _jwtService.GetTokenPayload(token);
-            var result = await _accountRepository.UpdateLastName(tokenPayload.UserId, body.Name);
-            return result == null ? NotFound() : Ok();
-        }
-
-        [HttpPatch("me/phone"), Authorize]
-        [SwaggerOperation("Изменить номер пользователя")]
-        [SwaggerResponse(200)]
-        [SwaggerResponse(404)]
-
-        public async Task<IActionResult> UpdatePhone(
-            UpdatePhoneBody body,
-            [FromHeader(Name = nameof(HttpRequestHeader.Authorization))] string token)
-        {
-            var tokenPayload = _jwtService.GetTokenPayload(token);
-            var result = await _accountRepository.UpdatePhone(tokenPayload.UserId, body.PhoneNumber);
-            return result == null ? NotFound() : Ok();
-        }
-
-        [HttpPatch("me/email"), Authorize]
-        [SwaggerOperation("Изменить почту пользователя")]
-        [SwaggerResponse(200)]
-        [SwaggerResponse(404)]
-
-        public async Task<IActionResult> UpdateEmail(
-            UpdateEmailBody body,
-            [FromHeader(Name = nameof(HttpRequestHeader.Authorization))] string token)
-        {
-            var tokenPayload = _jwtService.GetTokenPayload(token);
-            var result = await _accountRepository.UpdateEmail(tokenPayload.UserId, body.Email);
+            var result = await _accountRepository.Update(tokenPayload.UserId, body);
             return result == null ? NotFound() : Ok();
         }
     }
