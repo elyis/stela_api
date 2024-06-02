@@ -7,8 +7,10 @@ namespace stela_api.src.Domain.Entities.Response
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
         public UserRole Role { get; set; }
+        public bool IsEmailVerified { get; set; }
+        public bool IsPhoneVerified { get; set; }
         public string? UrlImage { get; set; }
     }
 }

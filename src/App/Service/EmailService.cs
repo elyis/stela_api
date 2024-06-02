@@ -28,7 +28,7 @@ namespace stela_api.src.App.Service
             _logger = logger;
         }
 
-        public async Task SendMessage(string email, string subject, string message)
+        public async Task<bool> SendMessage(string email, string subject, string message)
         {
             try
             {
@@ -51,7 +51,10 @@ namespace stela_api.src.App.Service
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
+                return false;
             }
+
+            return true;
         }
     }
 }

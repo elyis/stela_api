@@ -3,14 +3,13 @@ using stela_api.src.Domain.IRepository;
 using stela_api.src.Domain.Models;
 using stela_api.src.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using webApiTemplate.src.App.Provider;
+using stela_api.src.Domain.Enums;
 
 namespace stela_api.src.Infrastructure.Repository
 {
     public class AccountRepository : IAccountRepository
     {
         private readonly AppDbContext _context;
-
         public AccountRepository(AppDbContext context)
         {
             _context = context;
@@ -25,11 +24,11 @@ namespace stela_api.src.Infrastructure.Repository
             var newUser = new Account
             {
                 Email = body.Email,
-                PasswordHash = Hmac512Provider.Compute(body.Password),
+                PasswordHash = body.Password,
                 RoleName = role,
                 FirstName = body.FirstName,
                 LastName = body.LastName,
-                Phone = body.Phone,
+                IsEmailVerified = true,
             };
 
             var result = await _context.Accounts.AddAsync(newUser);
@@ -79,7 +78,6 @@ namespace stela_api.src.Infrastructure.Repository
             return user.Token;
         }
 
-
         public async Task<Account?> Update(Guid id, UpdateAccountBody body)
         {
             var account = await GetById(id);
@@ -92,11 +90,45 @@ namespace stela_api.src.Infrastructure.Repository
             if (body.LastName != null)
                 account.LastName = body.LastName;
 
-            if (body.Email != null)
-                account.Email = body.Email;
+            await _context.SaveChangesAsync();
+            return account;
+        }
 
-            if (body.Phone != null)
-                account.Phone = body.Phone;
+        public async Task<Account?> UpdateConfirmationCode(Guid id, string code)
+        {
+            var account = await GetById(id);
+            if (account == null)
+                return null;
+
+            account.ConfirmationCode = code;
+            account.ConfirmationCodeValidBefore = DateTime.UtcNow.AddMinutes(5);
+            await _context.SaveChangesAsync();
+
+            return account;
+        }
+
+        public async Task<Account?> VerifyConfirmationCode(Guid id, AccountVerificationBody body)
+        {
+            var account = await GetById(id);
+            if (account == null)
+                return null;
+
+            if (account.ConfirmationCode != body.Code || account.ConfirmationCodeValidBefore < DateTime.UtcNow)
+                return null;
+
+            if (body.Method == VerificationMethod.Email)
+            {
+                account.IsEmailVerified = true;
+                account.Email = body.Identifier;
+            }
+            else
+            {
+                account.IsPhoneVerified = true;
+                account.Phone = body.Identifier;
+            }
+
+            account.ConfirmationCode = null;
+            account.ConfirmationCodeValidBefore = null;
 
             await _context.SaveChangesAsync();
             return account;

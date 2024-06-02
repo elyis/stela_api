@@ -8,12 +8,6 @@ namespace stela_api.src.Domain.Entities.Request
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
 
-        [EmailAddress]
-        public string? Email { get; set; }
-
-        [Phone]
-        public string? Phone { get; set; }
-
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (FirstName != null && !IsValidName(FirstName))

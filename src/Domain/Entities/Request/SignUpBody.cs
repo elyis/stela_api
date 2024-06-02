@@ -12,10 +12,6 @@ namespace stela_api.src.Domain.Entities.Request
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Last name must contain only letters")]
         public string LastName { get; set; }
 
-        [Phone]
-        [Required]
-        public string Phone { get; set; }
-
         [Required]
         [EmailAddress]
         public string Email { get; set; }
