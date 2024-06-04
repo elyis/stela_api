@@ -5,11 +5,11 @@ namespace stela_api.src.Domain.Entities.Request
     public class SignUpBody
     {
         [Required]
-        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "First name must contain only letters")]
+        [RegularExpression(@"^[А-Яа-яёЁ]+$", ErrorMessage = "First name must contain only letters")]
         public string FirstName { get; set; }
 
         [Required]
-        [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Last name must contain only letters")]
+        [RegularExpression(@"^[А-Яа-яёЁ]+$", ErrorMessage = "Last name must contain only letters")]
         public string LastName { get; set; }
 
         [Required]

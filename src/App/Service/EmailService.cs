@@ -38,7 +38,7 @@ namespace stela_api.src.App.Service
                 emailMessage.To.Add(new MailboxAddress("", email));
                 emailMessage.Body = new TextPart()
                 {
-                    Text = message
+                    Text = message,
                 };
 
                 using var client = new SmtpClient();
