@@ -21,6 +21,7 @@ namespace stela_api.src.Infrastructure.Data
         public DbSet<MemorialMaterials> MemorialMaterials { get; set; }
         public DbSet<Busket> Buskets { get; set; }
         public DbSet<BusketItem> BusketItems { get; set; }
+        public DbSet<AdditionalService> AdditionalServices { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

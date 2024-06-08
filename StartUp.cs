@@ -119,8 +119,8 @@ namespace stela_api
             services.AddSingleton<IEmailService, EmailService>();
             services.AddSingleton<IPhoneService, PhoneService>();
             services.AddSingleton<IFileUploaderService, LocalFileUploaderService>();
-            services.AddSingleton<IPlotPriceCalculationService, PlotPriceCalculationService>();
 
+            services.AddScoped<IPlotPriceCalculationService, PlotPriceCalculationService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICreateMemorialService, CreateMemorialService>();
 

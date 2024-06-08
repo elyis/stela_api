@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,8 @@ using stela_api.src.Domain.IRepository;
 
 using Swashbuckle.AspNetCore.Annotations;
 
+using webApiTemplate.src.App.IService;
+
 namespace stela_api.src.Web.Controllers
 {
     [ApiController]
@@ -16,10 +19,23 @@ namespace stela_api.src.Web.Controllers
     public class MaterialController : ControllerBase
     {
         private readonly IMaterialRepository _materialRepository;
+        private readonly IFileUploaderService _fileUploaderService;
+        private readonly string[] _supportedImageExtensions = new string[]
+        {
+            "gif",
+            "jpg",
+            "jpeg",
+            "jfif",
+            "png",
+            "svg"
+        };
 
-        public MaterialController(IMaterialRepository materialRepository)
+        public MaterialController(
+            IMaterialRepository materialRepository,
+            IFileUploaderService fileUploaderService)
         {
             _materialRepository = materialRepository;
+            _fileUploaderService = fileUploaderService;
         }
 
         [SwaggerOperation("Создать материал")]
@@ -45,18 +61,6 @@ namespace stela_api.src.Web.Controllers
             return result == null ? NotFound() : Ok(result.ToMemorialMaterialBody());
         }
 
-        // [SwaggerOperation("Получить материал по имени")]
-        // [SwaggerResponse(200, Type = typeof(MemorialMaterialBody))]
-        // [SwaggerResponse(404)]
-
-        // [HttpGet("material/name")]
-        // public async Task<IActionResult> GetMaterialByName(
-        //     [FromQuery, Required] string key)
-        // {
-        //     var result = await _materialRepository.GetMaterialByName(key);
-        //     return result == null ? NotFound() : Ok(result.ToMemorialMaterialBody());
-        // }
-
         [SwaggerOperation("Получить список материалов")]
         [SwaggerResponse(200, Type = typeof(PaginationResponse<MemorialMaterialBody>))]
 
@@ -75,6 +79,37 @@ namespace stela_api.src.Web.Controllers
                 Items = result.Select(e => e.ToMemorialMaterialBody())
             });
         }
+
+        [HttpPost("upload/material"), Authorize]
+        [SwaggerOperation("Загрузить иконку материала")]
+        [SwaggerResponse(200, Description = "Успешно")]
+        public async Task<IActionResult> UploadMaterialImage(
+            [FromHeader(Name = nameof(HttpRequestHeader.Authorization))] string token,
+            [FromForm, Required] IFormFile file,
+            [FromQuery, Required] Guid materialId
+        )
+        {
+            var material = await _materialRepository.GetMaterialById(materialId);
+            if (material == null)
+                return NotFound();
+
+            var response = await _fileUploaderService.UploadFileAsync(Constants.LocalPathToMaterialImages, file.OpenReadStream(), _supportedImageExtensions);
+
+            if (response is OkObjectResult result)
+            {
+                var filename = (string)result.Value;
+                await _materialRepository.UpdateMaterialImage(materialId, filename);
+            }
+            return response;
+        }
+
+        [HttpGet("upload/material/{filename}")]
+        [SwaggerOperation("Получить иконку материала")]
+        [SwaggerResponse(200, Description = "Успешно", Type = typeof(File))]
+        [SwaggerResponse(404, Description = "Неверное имя файла")]
+
+        public async Task<IActionResult> GetMaterialImage(string filename)
+            => await _fileUploaderService.GetStreamFileAsync(Constants.LocalPathToMaterialImages, filename);
 
     }
 }

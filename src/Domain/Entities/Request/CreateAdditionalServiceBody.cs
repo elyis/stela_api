@@ -2,16 +2,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace stela_api.src.Domain.Entities.Request
 {
-    public class CreateMemorialBody
+    public class CreateAdditionalServiceBody
     {
-        [Required]
         public string Name { get; set; }
-
-        [Required]
         public string Description { get; set; }
 
-        [Required]
-        public required IEnumerable<Guid> MaterialIds { get; set; }
+        [Range(1, float.MaxValue)]
+        public float Price { get; set; }
     }
 }
-

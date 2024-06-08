@@ -24,9 +24,9 @@ namespace stela_api.src.Web.Controllers
         [SwaggerResponse(400)]
 
         [HttpPost("calculate-plot-price")]
-        public IActionResult CalculatePlotPrice(PlotPriceCalculationBody plotPriceCalculationBody)
+        public async Task<IActionResult> CalculatePlotPrice(PlotPriceCalculationBody plotPriceCalculationBody)
         {
-            var result = _plotPriceCalculationService.Invoke(plotPriceCalculationBody);
+            var result = await _plotPriceCalculationService.Invoke(plotPriceCalculationBody);
             return Ok(result);
         }
     }

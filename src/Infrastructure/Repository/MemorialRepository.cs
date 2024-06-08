@@ -41,7 +41,6 @@ namespace stela_api.src.Infrastructure.Repository
             {
                 Name = createMemorialBody.Name,
                 Description = createMemorialBody.Description,
-                CemeteryName = createMemorialBody.CemeteryName.ToString(),
             };
 
             var memorialMaterials = materials.Select(e => new MemorialMaterials

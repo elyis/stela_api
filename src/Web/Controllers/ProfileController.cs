@@ -8,6 +8,7 @@ using webApiTemplate.src.App.IService;
 using stela_api.src.Domain.Entities.Request;
 using stela_api.src.Domain.Entities.Shared.Utility;
 using stela_api.src.App.IService;
+using System.ComponentModel.DataAnnotations;
 
 namespace stela_api.src.Web.Controllers
 {
@@ -18,17 +19,29 @@ namespace stela_api.src.Web.Controllers
         private readonly IAccountRepository _accountRepository;
         private readonly IJwtService _jwtService;
         private readonly IEmailService _emailService;
+        private readonly IFileUploaderService _fileUploaderService;
         private readonly IPhoneService _phoneService;
+        private readonly string[] _supportedImageExtensions = new string[]
+        {
+            "gif",
+            "jpg",
+            "jpeg",
+            "jfif",
+            "png",
+            "svg"
+        };
 
         public ProfileController(
             IAccountRepository accountRepository,
             IJwtService jwtService,
             IEmailService emailService,
+            IFileUploaderService fileUploaderService,
             IPhoneService phoneService)
         {
             _accountRepository = accountRepository;
             _jwtService = jwtService;
             _emailService = emailService;
+            _fileUploaderService = fileUploaderService;
             _phoneService = phoneService;
         }
 
@@ -115,5 +128,34 @@ namespace stela_api.src.Web.Controllers
             var result = await _accountRepository.VerifyConfirmationCode(tokenPayload.UserId, body);
             return result == null ? NotFound() : Ok();
         }
+
+
+        [HttpPost("upload/me"), Authorize]
+        [SwaggerOperation("Загрузить иконку профиля")]
+        [SwaggerResponse(200, Description = "Успешно")]
+
+        public async Task<IActionResult> UploadProfileIcon(
+            [FromHeader(Name = nameof(HttpRequestHeader.Authorization))] string token,
+            [FromForm, Required] IFormFile file
+        )
+        {
+            var response = await _fileUploaderService.UploadFileAsync(Constants.LocalPathToProfileIcons, file.OpenReadStream(), _supportedImageExtensions);
+
+            if (response is OkObjectResult result)
+            {
+                var filename = (string)result.Value;
+                var tokenInfo = _jwtService.GetTokenPayload(token);
+                await _accountRepository.UpdateImage(tokenInfo.UserId, filename);
+            }
+            return response;
+        }
+
+        [HttpGet("upload/me/{filename}")]
+        [SwaggerOperation("Получить иконку профиля")]
+        [SwaggerResponse(200, Description = "Успешно", Type = typeof(File))]
+        [SwaggerResponse(404, Description = "Неверное имя файла")]
+
+        public async Task<IActionResult> GetProfileIcon(string filename)
+            => await _fileUploaderService.GetStreamFileAsync(Constants.LocalPathToProfileIcons, filename);
     }
 }

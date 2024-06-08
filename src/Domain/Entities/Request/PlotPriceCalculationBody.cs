@@ -6,8 +6,8 @@ namespace stela_api.src.Domain.Entities.Request
 {
     public class PlotPriceCalculationBody
     {
-        [EnumDataType(typeof(AdditionalService))]
-        public AdditionalService AdditionalService { get; set; }
+        [Required]
+        public string AdditionalService { get; set; }
 
         [EnumDataType(typeof(GraniteColor))]
         public GraniteColor GraniteColor { get; set; }

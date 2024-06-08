@@ -6,7 +6,7 @@ namespace stela_api.src.App.IService
 {
     public interface IPlotPriceCalculationService
     {
-        IActionResult Invoke(PlotPriceCalculationBody plotPriceCalculationBody);
+        Task<IActionResult> Invoke(PlotPriceCalculationBody plotPriceCalculationBody);
     }
 }
 
