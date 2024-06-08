@@ -16,6 +16,11 @@ namespace stela_api.src.Infrastructure.Data
 
         public DbSet<Account> Accounts { get; set; }
         public DbSet<UnconfirmedAccount> UnconfirmedAccounts { get; set; }
+        public DbSet<MemorialMaterial> Materials { get; set; }
+        public DbSet<Memorial> Memorials { get; set; }
+        public DbSet<MemorialMaterials> MemorialMaterials { get; set; }
+        public DbSet<Busket> Buskets { get; set; }
+        public DbSet<BusketItem> BusketItems { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -27,6 +32,9 @@ namespace stela_api.src.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<MemorialMaterials>()
+                .HasKey(e => new { e.MemorialId, e.MaterialId });
+
             base.OnModelCreating(modelBuilder);
         }
     }

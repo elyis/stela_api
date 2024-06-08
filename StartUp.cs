@@ -13,6 +13,7 @@ using stela_api.src.App.IService;
 using stela_api.src.App.Service;
 using stela_api.src.Domain.Entities.Config;
 using Swashbuckle.AspNetCore.Filters;
+using MimeDetective.Definitions.Licensing;
 
 namespace stela_api
 {
@@ -47,7 +48,10 @@ namespace stela_api
 
             var fileInspector = new ContentInspectorBuilder()
             {
-                Definitions = MimeDetective.Definitions.Default.All()
+                Definitions = new MimeDetective.Definitions.CondensedBuilder()
+                {
+                    UsageType = UsageType.PersonalNonCommercial
+                }.Build()
             }.Build();
 
             services.AddControllers(config => config.OutputFormatters.RemoveType<HttpNoContentOutputFormatter>())
@@ -115,8 +119,10 @@ namespace stela_api
             services.AddSingleton<IEmailService, EmailService>();
             services.AddSingleton<IPhoneService, PhoneService>();
             services.AddSingleton<IFileUploaderService, LocalFileUploaderService>();
+            services.AddSingleton<IPlotPriceCalculationService, PlotPriceCalculationService>();
 
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ICreateMemorialService, CreateMemorialService>();
 
             services.Scan(scan => scan.FromCallingAssembly()
                     .AddClasses(classes =>

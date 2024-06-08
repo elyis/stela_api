@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using webApiTemplate.src.App.IService;
 using stela_api.src.Domain.Entities.Request;
-using System.ComponentModel.DataAnnotations;
 using stela_api.src.Domain.Entities.Shared.Utility;
 using stela_api.src.App.IService;
 

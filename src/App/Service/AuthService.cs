@@ -15,6 +15,7 @@ namespace stela_api.src.App.Service
     {
         private readonly IAccountRepository _accountRepository;
         private readonly IUnconfirmedAccountRepository _unconfirmedAccountRepository;
+        private readonly IBusketRepository _busketRepository;
         private readonly IJwtService _jwtService;
         private readonly IEmailService _emailService;
 
@@ -22,11 +23,13 @@ namespace stela_api.src.App.Service
         (
             IAccountRepository accountRepository,
             IUnconfirmedAccountRepository unconfirmedAccountRepository,
+            IBusketRepository busketRepository,
             IJwtService jwtService,
             IEmailService emailService
         )
         {
             _accountRepository = accountRepository;
+            _busketRepository = busketRepository;
             _unconfirmedAccountRepository = unconfirmedAccountRepository;
             _jwtService = jwtService;
             _emailService = emailService;
@@ -94,6 +97,7 @@ namespace stela_api.src.App.Service
             var result = await _accountRepository.AddAsync(body, rolename);
 
             var tokenPair = await UpdateToken(rolename, result.Id);
+            var busket = await _busketRepository.CreateBusket(result);
             return new OkObjectResult(tokenPair);
         }
 

@@ -27,7 +27,10 @@ namespace stela_api.src.Domain.Models
         public DateTime? ConfirmationCodeValidBefore { get; set; }
         public bool IsEmailVerified { get; set; }
         public bool IsPhoneVerified { get; set; }
+        public DateTime? LastPasswordDateModified { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public Busket Busket { get; set; }
 
         public ProfileBody ToProfileBody()
         {

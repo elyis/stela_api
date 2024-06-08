@@ -8,6 +8,7 @@ namespace stela_api.src.Domain.IRepository
         Task<Account?> AddAsync(SignUpBody body, string role);
         Task<Account?> GetById(Guid id);
         Task<Account?> GetByEmail(string email);
+        Task<Account?> ChangePassword(Guid id, string password);
         Task<string?> UpdateTokenAsync(string refreshToken, Guid userId, TimeSpan? duration = null);
         Task<Account?> GetByTokenAsync(string refreshTokenHash);
         Task<Account?> UpdateConfirmationCode(Guid id, string code);

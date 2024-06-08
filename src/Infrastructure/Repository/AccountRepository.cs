@@ -4,6 +4,7 @@ using stela_api.src.Domain.Models;
 using stela_api.src.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using stela_api.src.Domain.Enums;
+using webApiTemplate.src.App.Provider;
 
 namespace stela_api.src.Infrastructure.Repository
 {
@@ -131,6 +132,19 @@ namespace stela_api.src.Infrastructure.Repository
             account.ConfirmationCodeValidBefore = null;
 
             await _context.SaveChangesAsync();
+            return account;
+        }
+
+        public async Task<Account?> ChangePassword(Guid id, string password)
+        {
+            var account = await GetById(id);
+            if (account == null)
+                return null;
+
+            account.PasswordHash = Hmac512Provider.Compute(password);
+            account.LastPasswordDateModified = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
             return account;
         }
     }

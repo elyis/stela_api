@@ -2,7 +2,6 @@ using System.Net;
 using stela_api.src.Domain.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MimeDetective;
 using Swashbuckle.AspNetCore.Annotations;
 using webApiTemplate.src.App.IService;
 using System.ComponentModel.DataAnnotations;
@@ -14,24 +13,32 @@ namespace stela_api.src.Web.Controllers
     public class UploadController : ControllerBase
     {
         private readonly IAccountRepository _accountRepository;
+        private readonly IMemorialRepository _memorialRepository;
+        private readonly IMaterialRepository _materialRepository;
         private readonly IJwtService _jwtService;
         private readonly IFileUploaderService _fileUploaderService;
-        private readonly ContentInspector _contentInspector;
-        private readonly string _supportedIconMime;
-
+        private readonly string[] _supportedImageExtensions = new string[]
+        {
+            "gif",
+            "jpg",
+            "jpeg",
+            "jfif",
+            "png",
+            "svg"
+        };
 
         public UploadController(
             IAccountRepository accountRepository,
+            IMemorialRepository memorialRepository,
+            IMaterialRepository materialRepository,
             IJwtService jwtService,
-            IFileUploaderService fileUploaderService,
-            ContentInspector contentInspector
-        )
+            IFileUploaderService fileUploaderService)
         {
             _accountRepository = accountRepository;
+            _memorialRepository = memorialRepository;
+            _materialRepository = materialRepository;
             _jwtService = jwtService;
             _fileUploaderService = fileUploaderService;
-            _contentInspector = contentInspector;
-            _supportedIconMime = "image/";
         }
 
         [HttpPost("me"), Authorize]
@@ -43,18 +50,15 @@ namespace stela_api.src.Web.Controllers
             [FromForm, Required] IFormFile file
         )
         {
-            if (file.Length == 0)
-                return BadRequest("File size cannot be equal to zero");
+            var response = await _fileUploaderService.UploadFileAsync(Constants.LocalPathToProfileIcons, file.OpenReadStream(), _supportedImageExtensions);
 
-            var resultUpload = await UploadIconAsync(Constants.LocalPathToProfileIcons, file);
-
-            if (resultUpload is OkObjectResult result)
+            if (response is OkObjectResult result)
             {
                 var filename = (string)result.Value;
                 var tokenInfo = _jwtService.GetTokenPayload(token);
                 await _accountRepository.UpdateImage(tokenInfo.UserId, filename);
             }
-            return resultUpload;
+            return response;
         }
 
         [HttpGet("me/{filename}")]
@@ -63,32 +67,85 @@ namespace stela_api.src.Web.Controllers
         [SwaggerResponse(404, Description = "Неверное имя файла")]
 
         public async Task<IActionResult> GetProfileIcon(string filename)
-            => await GetIconAsync(Constants.LocalPathToProfileIcons, filename);
+            => await _fileUploaderService.GetStreamFileAsync(Constants.LocalPathToProfileIcons, filename);
 
-        private async Task<IActionResult> GetIconAsync(string path, string filename)
+
+        [HttpPost("memorial"), Authorize]
+        [SwaggerOperation("Загрузить иконку памятника")]
+        [SwaggerResponse(200, Description = "Успешно")]
+        public async Task<IActionResult> UploadMemorialImage(
+            [FromHeader(Name = nameof(HttpRequestHeader.Authorization))] string token,
+            [FromForm, Required] IFormFile file,
+            [FromQuery, Required] Guid memorialId
+        )
         {
-            var bytes = await _fileUploaderService.GetStreamFileAsync(path, filename);
-            if (bytes == null)
+            var memorial = await _memorialRepository.GetMemorialById(memorialId);
+            if (memorial == null)
                 return NotFound();
 
-            var fileExtension = Path.GetExtension(filename);
-            return File(bytes, $"image/{fileExtension}", filename);
+            var response = await _fileUploaderService.UploadFileAsync(Constants.LocalPathToMemorialImages, file.OpenReadStream(), _supportedImageExtensions);
+
+            if (response is OkObjectResult result)
+            {
+                var filename = (string)result.Value;
+                await _memorialRepository.AddImage(memorialId, filename);
+            }
+            return response;
         }
 
-        private async Task<IActionResult> UploadIconAsync(string path, IFormFile file)
+        [HttpPost("material"), Authorize]
+        [SwaggerOperation("Загрузить иконку материала")]
+        [SwaggerResponse(200, Description = "Успешно")]
+        public async Task<IActionResult> UploadMaterialImage(
+            [FromHeader(Name = nameof(HttpRequestHeader.Authorization))] string token,
+            [FromForm, Required] IFormFile file,
+            [FromQuery, Required] Guid materialId
+        )
         {
-            if (file == null || file.Length == 0)
-                return BadRequest("No file uploaded");
+            var material = await _materialRepository.GetMaterialById(materialId);
+            if (material == null)
+                return NotFound();
 
-            var stream = file.OpenReadStream();
-            var mimeTypes = _contentInspector.Inspect(stream).ByMimeType();
-            var bestMatchMimeType = mimeTypes.MaxBy(e => e.Points)?.MimeType;
-            if (string.IsNullOrEmpty(bestMatchMimeType) || !bestMatchMimeType.StartsWith(_supportedIconMime))
-                return new UnsupportedMediaTypeResult();
+            var response = await _fileUploaderService.UploadFileAsync(Constants.LocalPathToMaterialImages, file.OpenReadStream(), _supportedImageExtensions);
 
-            var fileExtension = bestMatchMimeType.Split("/").Last();
-            string? filename = await _fileUploaderService.UploadFileAsync(path, stream, $".{fileExtension}");
-            return filename == null ? BadRequest("Failed to upload the file") : Ok();
+            if (response is OkObjectResult result)
+            {
+                var filename = (string)result.Value;
+                await _materialRepository.UpdateMaterialImage(materialId, filename);
+            }
+            return response;
         }
+
+        [HttpGet("material/{filename}")]
+        [SwaggerOperation("Получить иконку материала")]
+        [SwaggerResponse(200, Description = "Успешно", Type = typeof(File))]
+        [SwaggerResponse(404, Description = "Неверное имя файла")]
+
+        public async Task<IActionResult> GetMaterialImage(string filename)
+            => await _fileUploaderService.GetStreamFileAsync(Constants.LocalPathToMaterialImages, filename);
+
+
+        [HttpDelete("memorial"), Authorize]
+        [SwaggerOperation("Удалить иконку памятника")]
+        [SwaggerResponse(204, Description = "Успешно")]
+        [SwaggerResponse(404, Description = "Памятник не найден")]
+        public async Task<IActionResult> RemoveMemorialImage(
+            [FromHeader(Name = nameof(HttpRequestHeader.Authorization))] string token,
+            [FromQuery, Required] Guid memorialId,
+            [FromQuery, Required] string filename
+        )
+        {
+            var result = await _memorialRepository.RemoveImage(memorialId, filename);
+            return result == null ? new NotFoundResult() : new NoContentResult();
+        }
+
+        [HttpGet("memorial/{filename}")]
+        [SwaggerOperation("Получить иконку памятника")]
+        [SwaggerResponse(200, Description = "Успешно", Type = typeof(File))]
+        [SwaggerResponse(404, Description = "Неверное имя файла")]
+
+        public async Task<IActionResult> GetMemorialImage(string filename)
+            => await _fileUploaderService.GetStreamFileAsync(Constants.LocalPathToMemorialImages, filename);
     }
 }
+
