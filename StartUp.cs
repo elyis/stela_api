@@ -123,6 +123,7 @@ namespace stela_api
             services.AddScoped<IPlotPriceCalculationService, PlotPriceCalculationService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICreateMemorialService, CreateMemorialService>();
+            services.AddScoped<ICreatePortfolioMemorialService, CreatePortfolioMemorialService>();
 
             services.Scan(scan => scan.FromCallingAssembly()
                     .AddClasses(classes =>

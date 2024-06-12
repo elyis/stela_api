@@ -22,6 +22,8 @@ namespace stela_api.src.Infrastructure.Data
         public DbSet<Busket> Buskets { get; set; }
         public DbSet<BusketItem> BusketItems { get; set; }
         public DbSet<AdditionalService> AdditionalServices { get; set; }
+        public DbSet<PortfolioMemorial> PortfolioMemorials { get; set; }
+        public DbSet<PortfolioMemorialMaterials> PortfolioMemorialMaterials { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -35,6 +37,9 @@ namespace stela_api.src.Infrastructure.Data
         {
             modelBuilder.Entity<MemorialMaterials>()
                 .HasKey(e => new { e.MemorialId, e.MaterialId });
+
+            modelBuilder.Entity<PortfolioMemorialMaterials>()
+                .HasKey(e => new { e.MemorialMaterialId, e.PortfolioMemorialId });
 
             base.OnModelCreating(modelBuilder);
         }

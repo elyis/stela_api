@@ -17,6 +17,7 @@ namespace stela_api.src.Domain.Models
         public string? Hex { get; set; }
 
         public List<MemorialMaterials> Memorials { get; set; } = new List<MemorialMaterials>();
+        public List<PortfolioMemorialMaterials> PortfolioMemorialMaterials { get; set; } = new List<PortfolioMemorialMaterials>();
 
         public MemorialMaterialBody ToMemorialMaterialBody()
         {
