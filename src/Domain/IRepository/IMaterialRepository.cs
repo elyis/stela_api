@@ -11,6 +11,7 @@ namespace stela_api.src.Domain.IRepository
         Task<List<MemorialMaterial>> GetMaterials(int count, int offset);
         Task<List<MemorialMaterial>> GetMaterials(IEnumerable<Guid> ids);
         Task<long> GetMaterialCount();
+        Task<bool> RemoveMaterial(Guid id);
         Task<MemorialMaterial?> AddMaterial(CreateMemorialMaterialBody body);
         Task<MemorialMaterial?> UpdateMaterialImage(Guid id, string filename);
     }

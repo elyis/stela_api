@@ -94,7 +94,7 @@ namespace stela_api.src.Web.Controllers
             [FromHeader(Name = nameof(HttpRequestHeaders.Authorization))] string token)
         {
             var tokenPayload = _jwtService.GetTokenPayload(token);
-            var result = await _accountRepository.ChangePassword(tokenPayload.UserId, body.Password);
+            var result = await _accountRepository.ChangePassword(tokenPayload.UserId, body.Password, body.NewPassword);
             return Ok();
         }
     }

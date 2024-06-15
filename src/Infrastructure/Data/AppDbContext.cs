@@ -24,6 +24,7 @@ namespace stela_api.src.Infrastructure.Data
         public DbSet<AdditionalService> AdditionalServices { get; set; }
         public DbSet<PortfolioMemorial> PortfolioMemorials { get; set; }
         public DbSet<PortfolioMemorialMaterials> PortfolioMemorialMaterials { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

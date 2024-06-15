@@ -11,6 +11,7 @@ namespace stela_api.src.Domain.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string ColorName { get; set; }
         public string? Image { get; set; }
 
         [MaxLength(6)]
@@ -24,6 +25,7 @@ namespace stela_api.src.Domain.Models
             return new MemorialMaterialBody
             {
                 Id = Id,
+                ColorName = ColorName,
                 Hex = Hex != null ? $"#{Hex}" : null,
                 Image = Image == null ? null : $"{Constants.WebPathToMaterialImages}{Image}",
                 Name = Name

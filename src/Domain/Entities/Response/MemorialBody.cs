@@ -12,6 +12,8 @@ namespace stela_api.src.Domain.Entities.Response
     public class MemorialBody : BaseMemorialBody
     {
         public string Description { get; set; }
+        public float Price { get; set; }
+        public string StelaSize { get; set; }
     }
 
     public class ShortMemorialBody : BaseMemorialBody

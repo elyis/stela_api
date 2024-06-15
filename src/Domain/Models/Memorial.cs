@@ -7,6 +7,12 @@ namespace stela_api.src.Domain.Models
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public float Price { get; set; }
+
+        public float StelaLength { get; set; }
+        public float StelaWidth { get; set; }
+        public float StelaHeight { get; set; }
+
         public string? Images { get; set; }
 
         public List<MemorialMaterials> Materials { get; set; } = new List<MemorialMaterials>();
@@ -19,6 +25,8 @@ namespace stela_api.src.Domain.Models
                 Id = Id,
                 Name = Name,
                 Description = Description,
+                Price = Price,
+                StelaSize = $"{StelaLength}x{StelaWidth}x{StelaHeight}",
                 Images = GetImages(),
                 Materials = Materials.Select(e => e.Material.ToMemorialMaterialBody()).ToList()
             };

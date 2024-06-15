@@ -27,6 +27,7 @@ namespace stela_api.src.Infrastructure.Repository
             {
                 Name = body.Name,
                 Hex = body.Hex,
+                ColorName = body.ColorName,
             };
 
             await _context.Materials.AddAsync(material);
@@ -57,6 +58,18 @@ namespace stela_api.src.Infrastructure.Repository
 
         public async Task<List<MemorialMaterial>> GetMaterials(IEnumerable<Guid> ids) => await _context.Materials.Where(e => ids.Contains(e.Id))
             .ToListAsync();
+
+        public async Task<bool> RemoveMaterial(Guid id)
+        {
+            var material = await GetMaterialById(id);
+            if (material == null)
+                return false;
+
+            _context.Materials.Remove(material);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
 
         public async Task<MemorialMaterial?> UpdateMaterialImage(Guid id, string filename)
         {

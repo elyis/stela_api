@@ -135,17 +135,80 @@ namespace stela_api.src.Infrastructure.Repository
             return account;
         }
 
-        public async Task<Account?> ChangePassword(Guid id, string password)
+        public async Task<Account?> ChangePassword(Guid id, string password, string newPassword)
         {
             var account = await GetById(id);
             if (account == null)
                 return null;
 
-            account.PasswordHash = Hmac512Provider.Compute(password);
+            var hashPassword = Hmac512Provider.Compute(password);
+            if (hashPassword != account.PasswordHash)
+                return null;
+
+            account.PasswordHash = Hmac512Provider.Compute(newPassword);
             account.LastPasswordDateModified = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
             return account;
+        }
+
+        public async Task<IEnumerable<Account>> GetAllAccounts(int count, int offset, bool isOrderByAscending = true)
+        {
+            var query = _context.Accounts.Take(count).Skip(offset);
+            if (isOrderByAscending)
+                query = query.OrderBy(e => e.CreatedAt);
+            else
+                query = query.OrderByDescending(e => e.CreatedAt);
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<int> GetTotalAccounts() => await _context.Accounts.CountAsync();
+
+        public async Task<Account?> Update(UserPatchBody body)
+        {
+            var account = await GetById(body.Id);
+            if (account == null)
+                return null;
+
+            if (body.FirstName != null)
+                account.FirstName = body.FirstName;
+
+            if (body.LastName != null)
+                account.LastName = body.LastName;
+
+            if (body.Email != null)
+                account.Email = body.Email;
+
+            if (body.Role != null)
+                account.RoleName = body.Role.ToString();
+
+            await _context.SaveChangesAsync();
+            return account;
+        }
+
+        public async Task<bool> RemoveAccount(Guid id)
+        {
+            var account = await GetById(id);
+            if (account != null)
+            {
+                _context.Accounts.Remove(account);
+                await _context.SaveChangesAsync();
+            }
+
+            return true;
+        }
+
+        public async Task<bool> RemoveAccount(string email)
+        {
+            var account = await GetByEmail(email);
+            if (account != null)
+            {
+                _context.Accounts.Remove(account);
+                await _context.SaveChangesAsync();
+            }
+
+            return true;
         }
     }
 }

@@ -9,9 +9,8 @@ namespace stela_api.src.Domain.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
         public float Price { get; set; }
-        public string? Image { get; set; }
+        public string? Image { get; set; } = null;
 
         public AdditionalServiceBody ToAdditionalServiceBody()
         {
@@ -19,7 +18,6 @@ namespace stela_api.src.Domain.Models
             {
                 Id = Id,
                 Name = Name,
-                Description = Description,
                 Price = Price,
                 UrlImage = Image != null ? $"{Constants.WebPathToAdditionalServiceImages}{Image}" : null
             };

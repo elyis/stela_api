@@ -55,7 +55,7 @@ namespace stela_api.src.Web.Controllers
         [SwaggerResponse(200, Type = typeof(AdditionalServiceBody))]
         [SwaggerResponse(409, "Данная услуга уже существует")]
 
-        [HttpPost("additional-service")]
+        [HttpPost("additional-service"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateAdditionalService(CreateAdditionalServiceBody body)
         {
             var service = await _additionalServiceRepository.CreateService(body);
@@ -67,7 +67,7 @@ namespace stela_api.src.Web.Controllers
         [SwaggerResponse(204)]
         [SwaggerResponse(404, "Услуга не найдена")]
 
-        [HttpDelete("additional-service")]
+        [HttpDelete("additional-service"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteAdditionalService([FromQuery, Required] Guid key)
         {
             var service = await _additionalServiceRepository.DeleteService(key);

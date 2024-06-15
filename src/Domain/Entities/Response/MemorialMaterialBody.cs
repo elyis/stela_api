@@ -4,6 +4,7 @@ namespace stela_api.src.Domain.Entities.Response
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string ColorName { get; set; }
         public string? Image { get; set; }
         public string? Hex { get; set; }
     }

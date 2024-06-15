@@ -42,7 +42,7 @@ namespace stela_api.src.Web.Controllers
         [SwaggerResponse(200)]
         [SwaggerResponse(409)]
 
-        [HttpPost("material"), Authorize]
+        [HttpPost("material"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateMaterial(CreateMemorialMaterialBody body)
         {
             var result = await _materialRepository.AddMaterial(body);
@@ -59,6 +59,19 @@ namespace stela_api.src.Web.Controllers
         {
             var result = await _materialRepository.GetMaterialById(key);
             return result == null ? NotFound() : Ok(result.ToMemorialMaterialBody());
+        }
+
+
+        [SwaggerOperation("Удалить материал")]
+        [SwaggerResponse(204)]
+        [SwaggerResponse(400)]
+
+        [HttpDelete("material"), Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RemoveMaterial(
+            [FromQuery, Required] Guid key)
+        {
+            var result = await _materialRepository.RemoveMaterial(key);
+            return result ? NoContent() : BadRequest();
         }
 
         [SwaggerOperation("Получить список материалов")]

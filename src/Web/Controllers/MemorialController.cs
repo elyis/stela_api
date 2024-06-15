@@ -47,7 +47,7 @@ namespace stela_api.src.Web.Controllers
         [SwaggerResponse(200, "Памятник создан", typeof(MemorialBody))]
         [SwaggerResponse(400, "Материалы не указаны")]
 
-        [HttpPost("memorial"), Authorize]
+        [HttpPost("memorial"), Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateMemorial(CreateMemorialBody body)
         {
             var result = await _createMemorialService.Invoke(body);
@@ -86,7 +86,7 @@ namespace stela_api.src.Web.Controllers
             return memorial == null ? NotFound() : Ok(memorial.ToMemorialBody());
         }
 
-        [HttpPost("upload/memorial"), Authorize]
+        [HttpPost("upload/memorial"), Authorize(Roles = "Admin")]
         [SwaggerOperation("Загрузить иконку памятника")]
         [SwaggerResponse(200, Description = "Успешно")]
         public async Task<IActionResult> UploadMemorialImage(
@@ -109,7 +109,7 @@ namespace stela_api.src.Web.Controllers
             return response;
         }
 
-        [HttpDelete("upload/memorial"), Authorize]
+        [HttpDelete("upload/memorial"), Authorize(Roles = "Admin")]
         [SwaggerOperation("Удалить иконку памятника")]
         [SwaggerResponse(204, Description = "Успешно")]
         [SwaggerResponse(404, Description = "Памятник не найден")]

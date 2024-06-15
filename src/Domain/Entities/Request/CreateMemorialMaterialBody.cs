@@ -8,5 +8,6 @@ namespace stela_api.src.Domain.Entities.Request
 
         [RegularExpression("^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$")]
         public string? Hex { get; set; }
+        public string ColorName { get; set; }
     }
 }

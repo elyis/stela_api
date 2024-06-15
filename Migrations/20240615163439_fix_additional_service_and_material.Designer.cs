@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using stela_api.src.Infrastructure.Data;
@@ -11,9 +12,11 @@ using stela_api.src.Infrastructure.Data;
 namespace stela_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240615163439_fix_additional_service_and_material")]
+    partial class fix_additional_service_and_material
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -181,18 +184,6 @@ namespace stela_api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<float>("Price")
-                        .HasColumnType("real");
-
-                    b.Property<float>("StelaHeight")
-                        .HasColumnType("real");
-
-                    b.Property<float>("StelaLength")
-                        .HasColumnType("real");
-
-                    b.Property<float>("StelaWidth")
-                        .HasColumnType("real");
-
                     b.HasKey("Id");
 
                     b.ToTable("Memorials");
@@ -240,33 +231,6 @@ namespace stela_api.Migrations
                     b.HasIndex("MaterialId");
 
                     b.ToTable("MemorialMaterials");
-                });
-
-            modelBuilder.Entity("stela_api.src.Domain.Models.Order", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ClientId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("MemorialId")
-                        .HasColumnType("uuid");
-
-                    b.Property<float>("TotalPrice")
-                        .HasColumnType("real");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClientId");
-
-                    b.HasIndex("MemorialId");
-
-                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("stela_api.src.Domain.Models.PortfolioMemorial", b =>
@@ -392,25 +356,6 @@ namespace stela_api.Migrations
                         .IsRequired();
 
                     b.Navigation("Material");
-
-                    b.Navigation("Memorial");
-                });
-
-            modelBuilder.Entity("stela_api.src.Domain.Models.Order", b =>
-                {
-                    b.HasOne("stela_api.src.Domain.Models.Account", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("stela_api.src.Domain.Models.Memorial", "Memorial")
-                        .WithMany()
-                        .HasForeignKey("MemorialId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Client");
 
                     b.Navigation("Memorial");
                 });

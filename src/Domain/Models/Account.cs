@@ -46,5 +46,17 @@ namespace stela_api.src.Domain.Models
                 UrlImage = string.IsNullOrEmpty(Image) ? null : $"{Constants.WebPathToProfileIcons}{Image}",
             };
         }
+
+        public UserBody ToUserBody()
+        {
+            return new UserBody
+            {
+                Id = Id,
+                FirstName = FirstName,
+                LastName = LastName,
+                Email = Email,
+                Role = Enum.Parse<UserRole>(RoleName),
+            };
+        }
     }
 }

@@ -25,7 +25,6 @@ namespace stela_api.src.Infrastructure.Repository
                 {
                     Name = body.Name,
                     Price = body.Price,
-                    Description = body.Description,
                 };
 
                 service = (await _context.AdditionalServices.AddAsync(service)).Entity;

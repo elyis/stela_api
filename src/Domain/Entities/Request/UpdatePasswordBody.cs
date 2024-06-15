@@ -7,5 +7,8 @@ namespace stela_api.src.Domain.Entities.Request
         [Required]
         [MinLength(3)]
         public string Password { get; set; }
+
+        [Required, MinLength(3)]
+        public string NewPassword { get; set; }
     }
 }
