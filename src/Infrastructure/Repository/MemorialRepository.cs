@@ -21,14 +21,7 @@ namespace stela_api.src.Infrastructure.Repository
             var memorial = await GetMemorialById(id);
             if (memorial != null)
             {
-                if (string.IsNullOrEmpty(memorial.Images))
-                    memorial.Images = filename;
-                else
-                {
-                    var images = memorial.Images.Split(";").ToList();
-                    images.Add(filename);
-                    memorial.Images = string.Join(";", images);
-                }
+                memorial.Image = filename;
                 await _context.SaveChangesAsync();
             }
 
@@ -88,12 +81,10 @@ namespace stela_api.src.Infrastructure.Repository
             var memorial = await GetMemorialById(id);
             if (memorial != null)
             {
-                if (string.IsNullOrEmpty(memorial.Images))
+                if (string.IsNullOrEmpty(memorial.Image))
                     return null;
 
-                var images = memorial.Images.Split(";").ToList();
-                images.Remove(filename);
-                memorial.Images = string.Join(";", images);
+                memorial.Image = null;
                 await _context.SaveChangesAsync();
                 return filename;
             }

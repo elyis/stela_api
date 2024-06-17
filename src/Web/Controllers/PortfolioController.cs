@@ -100,7 +100,7 @@ namespace stela_api.src.Web.Controllers
             if (response is OkObjectResult result)
             {
                 var filename = (string)result.Value;
-                await _memorialRepository.UpdateImage(memorialId, filename);
+                await _memorialRepository.AddImage(memorialId, filename);
             }
             return response;
         }
@@ -110,10 +110,11 @@ namespace stela_api.src.Web.Controllers
         [SwaggerResponse(204, Description = "Успешно")]
         public async Task<IActionResult> RemoveMemorialImage(
             [FromHeader(Name = nameof(HttpRequestHeader.Authorization))] string token,
-            [FromQuery, Required] Guid memorialId
+            [FromQuery, Required] Guid memorialId,
+            [FromQuery, Required] string filename
         )
         {
-            await _memorialRepository.RemoveImage(memorialId);
+            await _memorialRepository.RemoveImage(memorialId, filename);
             return NoContent();
         }
 

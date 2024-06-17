@@ -15,12 +15,14 @@ namespace stela_api.src.Infrastructure.Repository
             _context = context;
         }
 
-        public async Task<PortfolioMemorial?> UpdateImage(Guid id, string filename)
+        public async Task<PortfolioMemorial?> AddImage(Guid id, string filename)
         {
             var portfolioMemorial = await GetPortfolioMemorialById(id);
             if (portfolioMemorial != null)
             {
-                portfolioMemorial.Image = filename;
+                var images = portfolioMemorial.Images?.Split(";").ToList() ?? new List<string>();
+                images.Add(filename);
+                portfolioMemorial.Images = string.Join(";", images);
                 await _context.SaveChangesAsync();
             }
 
@@ -74,12 +76,17 @@ namespace stela_api.src.Infrastructure.Repository
             .ThenInclude(e => e.Material)
             .FirstOrDefaultAsync(e => e.Id == id);
 
-        public async Task<bool> RemoveImage(Guid id)
+        public async Task<bool> RemoveImage(Guid id, string filename)
         {
             var portfolioMemorial = await GetPortfolioMemorialById(id);
             if (portfolioMemorial != null)
             {
-                portfolioMemorial.Image = null;
+                if (string.IsNullOrEmpty(portfolioMemorial.Images))
+                    return true;
+
+                var images = portfolioMemorial.Images.Split(";").ToList();
+                images.Remove(filename);
+                portfolioMemorial.Images = string.Join(";", images);
                 await _context.SaveChangesAsync();
             }
 

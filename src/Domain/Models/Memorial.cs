@@ -13,7 +13,7 @@ namespace stela_api.src.Domain.Models
         public float StelaWidth { get; set; }
         public float StelaHeight { get; set; }
 
-        public string? Images { get; set; }
+        public string? Image { get; set; }
 
         public List<MemorialMaterials> Materials { get; set; } = new List<MemorialMaterials>();
         public List<BusketItem> BusketItems { get; set; } = new List<BusketItem>();
@@ -27,7 +27,7 @@ namespace stela_api.src.Domain.Models
                 Description = Description,
                 Price = Price,
                 StelaSize = $"{StelaLength}x{StelaWidth}x{StelaHeight}",
-                Images = GetImages(),
+                Image = GetImage(),
                 Materials = Materials.Select(e => e.Material.ToMemorialMaterialBody()).ToList()
             };
         }
@@ -38,16 +38,16 @@ namespace stela_api.src.Domain.Models
             {
                 Id = Id,
                 Name = Name,
-                Images = GetImages(),
+                Image = GetImage(),
                 Materials = Materials.Select(e => e.Material.ToMemorialMaterialBody()).ToList()
             };
         }
 
-        private List<string> GetImages()
+        private string? GetImage()
         {
-            return string.IsNullOrEmpty(Images)
-                ? new List<string>()
-                : Images.Split(";").Select(e => $"{Constants.WebPathToMemorialImages}{e}").ToList();
+            return string.IsNullOrEmpty(Image)
+                ? null
+                : $"{Constants.WebPathToMemorialImages}{Image}";
         }
     }
 }

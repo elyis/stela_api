@@ -87,6 +87,7 @@ namespace stela_api.src.Web.Controllers
 
         [SwaggerOperation("Изменение пароля")]
         [SwaggerResponse(200, "Успешно создан")]
+        [SwaggerResponse(400, "Пароли не совпадают")]
 
         [HttpPatch("change-password"), Authorize]
         public async Task<IActionResult> ChangePassword(
@@ -95,7 +96,7 @@ namespace stela_api.src.Web.Controllers
         {
             var tokenPayload = _jwtService.GetTokenPayload(token);
             var result = await _accountRepository.ChangePassword(tokenPayload.UserId, body.Password, body.NewPassword);
-            return Ok();
+            return result == null ? BadRequest() : Ok();
         }
     }
 }
