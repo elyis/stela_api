@@ -35,6 +35,7 @@ namespace stela_api.src.Infrastructure.Repository
             {
                 Name = body.Name,
                 Description = body.Description,
+                CemeteryName = body.CemeteryName,
             };
 
             var portfolioMemorialMaterials = materials.Select(e => new PortfolioMemorialMaterials

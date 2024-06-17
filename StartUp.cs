@@ -218,7 +218,6 @@ namespace stela_api
                 new()
                 {
                     Name = "МОНУМЕНТАЛЬНЫЙ МЕМОРИАЛЬНЫЙ КОМПЛЕКС",
-                    CemeteryName = "Православное кладбище",
                     Price = 40000,
                     Image = "11.png",
                     Description = "",
@@ -234,7 +233,6 @@ namespace stela_api
                 new()
                 {
                     Name = "ЭКСКЛЮЗИВНЫЙ ПАМЯТНИК ИЗ ЗМЕЕВИКА",
-                    CemeteryName = "Православное кладбище",
                     Price = 40000,
                     Image = "12.png",
                     Description = "",
@@ -251,7 +249,6 @@ namespace stela_api
                 new()
                 {
                     Name = "МЕМОРИАЛЬНЫЙ КОМПЛЕКС",
-                    CemeteryName = "Православное кладбище",
                     Price = 40000,
                     Image = "13.png",
                     Description = "",
@@ -269,7 +266,6 @@ namespace stela_api
                 new()
                 {
                     Name = "МЕМОРИАЛЬНЫЙ КОМПЛЕКС",
-                    CemeteryName = "Православное кладбище",
                     Price = 40000,
                     Image = "14.png",
                     Description = "",
@@ -286,7 +282,6 @@ namespace stela_api
                 new()
                 {
                     Name = "АВТОРСКАЯ НАДГРОБНАЯ КОМПОЗИЦИЯ",
-                    CemeteryName = "Православное кладбище",
                     Price = 60000,
                     Image = "15.png",
                     Description = "",
@@ -302,7 +297,6 @@ namespace stela_api
                 new()
                 {
                     Name = "ЭЛИТНЫЙ МЕМОРИАЛЬНЫЙ КОМПЛЕКС",
-                    CemeteryName = "Православное кладбище",
                     Price = 100000,
                     Image = "16.png",
                     Description = "",
@@ -321,23 +315,23 @@ namespace stela_api
 
             var portfolioMemorials = new List<PortfolioMemorial>()
             {
-                new() { Description = "", Name = "ПРОЕКТ №1", Images = "1_1.png;1_2.png;1_3.png;", Materials = new List<PortfolioMemorialMaterials>()
+                new() { CemeteryName = "Православное кладбище",Description = "", Name = "ПРОЕКТ №1", Images = "1_1.png;1_2.png;1_3.png;", Materials = new List<PortfolioMemorialMaterials>()
                 {
                     new() { Material = materials[0]}
                 }},
 
-                new() { Description = "", Name = "ПРОЕКТ №2", Images = "2_1.png;2_2.png;", Materials = new List<PortfolioMemorialMaterials>()
+                new() { CemeteryName = "Православное кладбище",Description = "", Name = "ПРОЕКТ №2", Images = "2_1.png;2_2.png;", Materials = new List<PortfolioMemorialMaterials>()
                 {
                     new() { Material = materials[3]}
                 }},
 
-                new() { Description = "", Name = "ПРОЕКТ №3", Images = "3_1.png;3_2.png;", Materials = new List<PortfolioMemorialMaterials>()
+                new() { CemeteryName = "Православное кладбище",Description = "", Name = "ПРОЕКТ №3", Images = "3_1.png;3_2.png;", Materials = new List<PortfolioMemorialMaterials>()
                 {
                     new() { Material = materials[5]},
                     new() { Material = materials[9]},
                 }},
 
-                new() { Description = "", Name = "ПРОЕКТ №4", Images = "4_1.png;4_2.png;4_3.png;", Materials = new List<PortfolioMemorialMaterials>()
+                new() { CemeteryName = "Православное кладбище",Description = "", Name = "ПРОЕКТ №4", Images = "4_1.png;4_2.png;4_3.png;", Materials = new List<PortfolioMemorialMaterials>()
                 {
                     new() { Material = materials[10]},
                     new() { Material = materials[11]},

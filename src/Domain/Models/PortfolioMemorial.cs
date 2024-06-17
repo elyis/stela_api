@@ -7,6 +7,7 @@ namespace stela_api.src.Domain.Models
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string CemeteryName { get; set; }
         public string? Images { get; set; }
 
 
@@ -20,6 +21,7 @@ namespace stela_api.src.Domain.Models
                 Name = Name,
                 Description = Description,
                 Images = GetImages(),
+                CemeteryName = CemeteryName,
                 Materials = Materials.Select(m => m.Material.ToMemorialMaterialBody()).ToList()
             };
         }
@@ -30,6 +32,7 @@ namespace stela_api.src.Domain.Models
             {
                 Id = Id,
                 Name = Name,
+                CemeteryName = CemeteryName,
                 Images = GetImages(),
                 Materials = Materials.Select(m => m.Material.ToMemorialMaterialBody()).ToList()
             };

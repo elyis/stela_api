@@ -8,7 +8,6 @@ namespace stela_api.src.Domain.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public float Price { get; set; }
-        public string CemeteryName { get; set; }
 
         public float StelaLength { get; set; }
         public float StelaWidth { get; set; }

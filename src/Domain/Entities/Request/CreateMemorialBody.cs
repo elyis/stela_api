@@ -23,9 +23,6 @@ namespace stela_api.src.Domain.Entities.Request
         public float StelaHeight { get; set; }
 
         [Required]
-        public string CemeteryName { get; set; }
-
-        [Required]
         public required IEnumerable<Guid> MaterialIds { get; set; }
     }
 }
