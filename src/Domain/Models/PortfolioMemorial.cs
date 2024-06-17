@@ -42,7 +42,7 @@ namespace stela_api.src.Domain.Models
         {
             return string.IsNullOrEmpty(Images)
                 ? new List<string>()
-                : Images.Split(";").Select(e => $"{Constants.WebPathToPortfolioMemorialImages}{e}").ToList();
+                : Images.Split(";").Where(e => !string.IsNullOrEmpty(e)).Select(e => $"{Constants.WebPathToPortfolioMemorialImages}{e}").ToList();
         }
     }
 }
