@@ -22,6 +22,7 @@ namespace stela_api.src.Domain.Models
                 ClientLastName = Client.LastName,
                 ClientPhone = Client.Phone,
                 MemorialName = Memorial.Name,
+                UrlImage = Memorial.Image == null ? null : $"{Constants.WebPathToMemorialImages}{Memorial.Image}",
                 StelaSize = $"{Memorial.StelaLength}x{Memorial.StelaWidth}x{Memorial.StelaHeight}",
                 TotalPrice = TotalPrice,
                 Date = Date.ToString("yyyy-MM-dd"),

@@ -6,6 +6,7 @@ namespace stela_api.src.Domain.Entities.Response
         public string MemorialName { get; set; }
         public string ClientFirstName { get; set; }
         public string ClientLastName { get; set; }
+        public string? UrlImage { get; set; }
         public string? ClientPhone { get; set; }
         public string StelaSize { get; set; }
         public float TotalPrice { get; set; }
