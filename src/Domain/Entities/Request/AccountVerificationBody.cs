@@ -13,6 +13,7 @@ namespace stela_api.src.Domain.Entities.Request
         [Required]
         [MinLength(4)]
         public string Code { get; set; }
+        [EnumDataType(typeof(VerificationMethod))]
         public VerificationMethod Method { get; set; } = VerificationMethod.Email;
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

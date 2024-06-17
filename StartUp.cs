@@ -14,6 +14,9 @@ using stela_api.src.App.Service;
 using stela_api.src.Domain.Entities.Config;
 using Swashbuckle.AspNetCore.Filters;
 using MimeDetective.Definitions.Licensing;
+using stela_api.src.Domain.Models;
+using stela_api.src.Domain.Enums;
+using webApiTemplate.src.App.Provider;
 
 namespace stela_api
 {
@@ -158,7 +161,192 @@ namespace stela_api
             app.UseAuthorization();
 
             app.MapControllers();
+
+            InitDatabase(app.Services);
             app.Run();
+        }
+
+        private void InitDatabase(IServiceProvider serviceProvider)
+        {
+            using var scope = serviceProvider.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            var account = context.Accounts.FirstOrDefault(e => e.Email == "admin@admin.ru");
+            if (account != null) return;
+
+            var adminAccount = new Account
+            {
+                FirstName = "admin",
+                LastName = "admin",
+                Email = "admin@admin.ru",
+                PasswordHash = Hmac512Provider.Compute("htop"),
+                RoleName = UserRole.Admin.ToString(),
+                IsEmailVerified = true,
+            };
+
+            context.Accounts.Add(adminAccount);
+
+            var materials = new List<MemorialMaterial>()
+            {
+                new() { Name = "Шанси Блэк", ColorName = "Черный", Image = "44_Shanxi_Black.png" },
+                new() { Name = "Змеевик", ColorName = "Зеленый", Image = "uralskiy-zmeevik.jpg"},
+                new() { Name = "Габбро-Диабаз", ColorName = "Черный", Hex = "484848"},
+                new() { Name = "Диабаз", ColorName = "Серый", Image = "диабаз.jpg" },
+                new() { Name = "Коелга", ColorName = "Белый",  Image = "mramor-koelga.jpg"},
+                new() { Name = "Абсолют Блэк", ColorName = "Черный", Image = "absolute_black.jpg" },
+                new() { Name = "Олив Грин", ColorName = "Зеленый", Hex = "549079" },
+                new() { Name = "Паданг Дарк", ColorName = "Серый", Image = "Padang_Dark.jpg" },
+                new() { Name = "Роял Уайт", ColorName = "Белый", Image = "royale_white.jpg"},
+                new() { Name = "Чайна Марбал Уайт", ColorName = "Белый", Image = "чайна_вайт.jpg"},
+                new() { Name = "Империал Рэд", ColorName = "Красный", Image = "imperial_Red.jpg"},
+                new() { Name = "Куру Грей", ColorName = "Серый", Image = "curu_gray.jpg"}
+            };
+
+            context.Materials.AddRange(materials);
+
+            var additionalServices = new List<AdditionalService>()
+            {
+                new() { Name = "Мемориальные комплексы", Price = 10000, Image = "изготовление.png"},
+                new() { Name = "Изготовление скульптур", Price = 10000, Image = "изг.png"},
+                new() { Name = "Эксклюзивные памятники", Price = 10000,  Image = "эксклюзив.png"}
+            };
+
+            context.AdditionalServices.AddRange(additionalServices);
+
+            var memorials = new List<Memorial>()
+            {
+                new()
+                {
+                    Name = "МОНУМЕНТАЛЬНЫЙ МЕМОРИАЛЬНЫЙ КОМПЛЕКС",
+                    CemeteryName = "Православное кладбище",
+                    Price = 40000,
+                    Image = "11.png",
+                    Description = "",
+                    StelaHeight = 1,
+                    StelaLength = 1,
+                    StelaWidth = 1,
+                    Materials = new List<MemorialMaterials>()
+                    {
+                        new() { Material = materials[0]}
+                    }
+                },
+
+                new()
+                {
+                    Name = "ЭКСКЛЮЗИВНЫЙ ПАМЯТНИК ИЗ ЗМЕЕВИКА",
+                    CemeteryName = "Православное кладбище",
+                    Price = 40000,
+                    Image = "12.png",
+                    Description = "",
+                    StelaHeight = 1,
+                    StelaLength = 1,
+                    StelaWidth = 1,
+                    Materials = new List<MemorialMaterials>()
+                    {
+                        new() { Material = materials[1]},
+                        new() { Material = materials[2]}
+                    }
+                },
+
+                new()
+                {
+                    Name = "МЕМОРИАЛЬНЫЙ КОМПЛЕКС",
+                    CemeteryName = "Православное кладбище",
+                    Price = 40000,
+                    Image = "13.png",
+                    Description = "",
+                    StelaHeight = 1,
+                    StelaLength = 1,
+                    StelaWidth = 1,
+                    Materials = new List<MemorialMaterials>()
+                    {
+                        new() { Material = materials[1]},
+                        new() { Material = materials[3]},
+                        new() { Material = materials[4]}
+                    }
+                },
+
+                new()
+                {
+                    Name = "МЕМОРИАЛЬНЫЙ КОМПЛЕКС",
+                    CemeteryName = "Православное кладбище",
+                    Price = 40000,
+                    Image = "14.png",
+                    Description = "",
+                    StelaHeight = 1,
+                    StelaLength = 1,
+                    StelaWidth = 1,
+                    Materials = new List<MemorialMaterials>()
+                    {
+                        new() { Material = materials[5]},
+                        new() { Material = materials[6]},
+                    }
+                },
+
+                new()
+                {
+                    Name = "АВТОРСКАЯ НАДГРОБНАЯ КОМПОЗИЦИЯ",
+                    CemeteryName = "Православное кладбище",
+                    Price = 60000,
+                    Image = "15.png",
+                    Description = "",
+                    StelaHeight = 1,
+                    StelaLength = 1,
+                    StelaWidth = 1,
+                    Materials = new List<MemorialMaterials>()
+                    {
+                        new() { Material = materials[7]},
+                    }
+                },
+
+                new()
+                {
+                    Name = "ЭЛИТНЫЙ МЕМОРИАЛЬНЫЙ КОМПЛЕКС",
+                    CemeteryName = "Православное кладбище",
+                    Price = 100000,
+                    Image = "16.png",
+                    Description = "",
+                    StelaHeight = 1,
+                    StelaLength = 1,
+                    StelaWidth = 1,
+                    Materials = new List<MemorialMaterials>()
+                    {
+                        new() { Material = materials[0]},
+                        new() { Material = materials[8]},
+                    }
+                }
+            };
+
+            context.Memorials.AddRange(memorials);
+
+            var portfolioMemorials = new List<PortfolioMemorial>()
+            {
+                new() { Description = "", Name = "ПРОЕКТ №1", Images = "1_1.png;1_2.png;1_3.png;", Materials = new List<PortfolioMemorialMaterials>()
+                {
+                    new() { Material = materials[0]}
+                }},
+
+                new() { Description = "", Name = "ПРОЕКТ №2", Images = "2_1.png;2_2.png;", Materials = new List<PortfolioMemorialMaterials>()
+                {
+                    new() { Material = materials[3]}
+                }},
+
+                new() { Description = "", Name = "ПРОЕКТ №3", Images = "3_1.png;3_2.png;", Materials = new List<PortfolioMemorialMaterials>()
+                {
+                    new() { Material = materials[5]},
+                    new() { Material = materials[9]},
+                }},
+
+                new() { Description = "", Name = "ПРОЕКТ №4", Images = "4_1.png;4_2.png;4_3.png;", Materials = new List<PortfolioMemorialMaterials>()
+                {
+                    new() { Material = materials[10]},
+                    new() { Material = materials[11]},
+                }}
+            };
+
+            context.PortfolioMemorials.AddRange(portfolioMemorials);
+
+            context.SaveChanges();
         }
     }
 }

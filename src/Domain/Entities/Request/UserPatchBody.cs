@@ -9,6 +9,7 @@ namespace stela_api.src.Domain.Entities.Request
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Email { get; set; }
+
         [EnumDataType(typeof(UserRole))]
         public UserRole? Role { get; set; }
     }

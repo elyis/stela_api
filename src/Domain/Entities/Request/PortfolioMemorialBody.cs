@@ -8,7 +8,6 @@ namespace stela_api.src.Domain.Entities.Request
         public Guid Id { get; set; }
         public string Name { get; set; }
         public List<string> Images { get; set; } = new();
-        public string CemeteryName { get; set; }
 
         public List<MemorialMaterialBody> Materials { get; set; } = new();
     }
