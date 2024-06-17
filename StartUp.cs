@@ -280,18 +280,18 @@ namespace stela_api
 
             var portfolioMemorials = new List<PortfolioMemorial>()
             {
-                new() { CemeteryName = "Православное кладбище", Name = "МОНУМЕНТАЛЬНЫЙ МЕМОРИАЛЬНЫЙ КОМПЛЕКС", Description = "", Images="port1.1.png;port1.2.png;port1.3.png", Materials = new List<PortfolioMemorialMaterials>()
+                new() { CemeteryName = "Православное кладбище", Name = "МОНУМЕНТАЛЬНЫЙ МЕМОРИАЛЬНЫЙ КОМПЛЕКС", Description = "", Images="port1_1.png;port1_2.png;port1_3.png", Materials = new List<PortfolioMemorialMaterials>()
                 {
                     new() { Material = materials[0]}
                 }},
 
-                new() { CemeteryName = "Православное кладбище",Description = "", Name = "ЭКСКЛЮЗИВНЫЙ ПАМЯТНИК ИЗ ЗМЕЕВИКА", Images = "port2.1.png;port2.2.png", Materials = new List<PortfolioMemorialMaterials>()
+                new() { CemeteryName = "Православное кладбище",Description = "", Name = "ЭКСКЛЮЗИВНЫЙ ПАМЯТНИК ИЗ ЗМЕЕВИКА", Images = "port2_1.png;port2_2.png", Materials = new List<PortfolioMemorialMaterials>()
                 {
                     new() { Material = materials[1]},
                     new() { Material = materials[2]}
                 }},
 
-                new() { CemeteryName = "Православное кладбище",Description = "", Name = "МЕМОРИАЛЬНЫЙ КОМПЛЕКС", Images = "port3.1.png", Materials = new List<PortfolioMemorialMaterials>()
+                new() { CemeteryName = "Православное кладбище",Description = "", Name = "МЕМОРИАЛЬНЫЙ КОМПЛЕКС", Images = "port3_1.png", Materials = new List<PortfolioMemorialMaterials>()
                 {
                     new() { Material = materials[1]},
                     new() { Material = materials[3]},
